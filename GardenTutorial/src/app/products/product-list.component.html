@@ -1,0 +1,73 @@
+<div class='card'>
+    <div class='card-header'>
+        {{pageTitle}}
+    </div>
+    <div class='card-body'>
+        <div class='row'>
+            <div class='col-md-2'>Filter by:</div>
+            <!-- ngModel in [()] brackets to allow two way binding of the listFilter variable -->
+            <div class='col-md-4'>
+                <input type='text' 
+                [(ngModel)]='listFilter'/>
+            </div>
+        </div>
+        <div class='row'>
+            <div class='col-md-6'>
+                <h4>Filtered by: {{listFilter}} </h4>
+            </div>
+        </div>
+
+        <div class='table-responsive'>
+            <!-- ngIf = if there are products, then display the table -->
+            <table class='table' *ngIf ='products.length'>
+                <thead>
+                    <tr>
+                        <th>
+                            <!-- toggle image on button whether to show or hide the images -->
+                            <button class='btn btn-primary'
+                            (click)='toggleImage()'>
+                            <!-- if the showImage boolean is true, display the text 'Hide' and 'Show' if its false -->
+                                {{showImage ? 'Hide' : 'Show'}} Image
+                            </button>
+                        </th>
+                        <th>Product</th>
+                        <th>Code</th>
+                        <th>Available</th>
+                        <th>Price</th>
+                        <th>5 Star Rating</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- ngFor = for loop to iterate through each object of the filteredProducts array -->
+                    <tr *ngFor="let product of filteredProducts">
+                        <td>
+                            <!-- if showImage is true then display the image -->
+                            <img *ngIf='showImage'
+                                 [src]='product.imageUrl'
+                                 [title]='product.productName'
+                                 [style.width.px]='imageWidth'
+                                 [style.margin.px]='imageMargin'>
+                        </td>
+                        <td>
+                            <!-- productName field links to the product detail screen, by passing the productId to the router after /products/-->
+                           <a [routerLink]="['/products', product.productId] ">
+                            {{product.productName}}
+                           </a>
+                        </td>
+                        <td>{{product.productCode | lowercase | convertToSpaces:'-'}}</td>
+                        <td>{{product.releaseDate}}</td>
+                        <td>{{product.price | currency:'GBP':'symbol':'1.2-2'}}</td>
+                        <!-- call nested component of pm-star and input the rating to the child component with the rating from the product -->
+                        <td>
+                        <pm-star [rating]='product.starRating'
+                            (ratingClicked)='onRatingClicked($event)'>
+                        </pm-star>
+                    </td>
+                        <!-- When the rating is clicked output the onRatingClicked event to the parent template -->
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
